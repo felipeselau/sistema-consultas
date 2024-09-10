@@ -1,5 +1,4 @@
-import { Prisma } from "@prisma/client";
-import { Cargo } from "src/utils/types";
+import { Cargo, Prisma } from "@prisma/client";
 
 export class Funcionario implements Prisma.FuncionarioCreateInput {
     id: number;

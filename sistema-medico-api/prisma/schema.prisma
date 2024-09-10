@@ -13,6 +13,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Cargo {
+  ATENDENTE
+  ADMIN
+}
+
+enum Especialidade {
+  CARDIOLOGISTA
+  CLINICO_GERAL
+  DERMATOLOGISTA
+  ENDOCRINOLOGISTA
+  GINECOLOGISTA
+  NEUROLOGISTA
+  OFTALMOLOGISTA
+  ORTOPEDISTA
+  OTORRINOLARINGOLOGISTA
+  PEDIATRA
+  PSIQUIATRA
+  UROLOGISTA
+}
+
+enum Status {
+  AGENDADA
+  ADIADA
+  CANCELADA
+  REALIZADA
+}
+
+// adicionar model User, abstraindo infos comuns de Medico e Paciente, adicionando autenticação
 model Medico {
   id        Int      @id @default(autoincrement())
   nome      String
@@ -20,6 +48,7 @@ model Medico {
   crm       String
   especialidade String
   dataNascimento DateTime
+  observacoes String
   consultas Consulta[]
 }
 
@@ -29,17 +58,24 @@ model Paciente {
   cpf       String
   dataNascimento DateTime
   endereco  String
+  observacoes String
   consultas Consulta[]
 }
 
 model Consulta {
-  id        Int      @id @default(autoincrement())
-  data      DateTime
-  medico    Medico   @relation(fields: [medicoId], references: [id])
-  medicoId  Int
-  paciente  Paciente @relation(fields: [pacienteId], references: [id])
-  pacienteId Int
+  id           Int        @id @default(autoincrement())
+  data         DateTime
+  status       Status
+  especialidade Especialidade
+  observacoes   String
+  medico       Medico     @relation(fields: [medicoId], references: [id])
+  medicoId     Int
+  paciente     Paciente   @relation(fields: [pacienteId], references: [id])
+  pacienteId   Int
+  funcionario  Funcionario @relation(fields: [funcionarioId], references: [id])
+  funcionarioId Int
 }
+
 
 model Funcionario {
   id        Int      @id @default(autoincrement())
@@ -48,5 +84,7 @@ model Funcionario {
   dataNascimento DateTime
   dataAdmissao DateTime
   endereco  String
-  cargo    String
+  cargo    Cargo
+
+  Consulta Consulta[]
 }
