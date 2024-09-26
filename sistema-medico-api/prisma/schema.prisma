@@ -13,11 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Cargo {
-  ATENDENTE
-  ADMIN
-}
-
 enum Especialidade {
   CARDIOLOGISTA
   CLINICO_GERAL
@@ -40,51 +35,45 @@ enum Status {
   REALIZADA
 }
 
-// adicionar model User, abstraindo infos comuns de Medico e Paciente, adicionando autenticação
-model Medico {
-  id        Int      @id @default(autoincrement())
-  nome      String
-  cpf       String
-  crm       String
-  especialidade String
+model User {
+  id             Int      @id @default(autoincrement())
+  nome           String
+  cpf            String   @unique
   dataNascimento DateTime
-  observacoes String
-  consultas Consulta[]
+  endereco       String
+  observacoes    String
+
+  email          String @unique
+  senha          String
+
+  Medico   Medico?
+  Paciente Paciente?
+}
+
+model Medico {
+  id            Int           @id
+  crm           String        @unique
+  especialidade Especialidade
+  consultas     Consulta[]
+  userId        Int           @unique
+  user          User          @relation(fields: [userId], references: [id])
 }
 
 model Paciente {
-  id        Int      @id @default(autoincrement())
-  nome      String
-  cpf       String
-  dataNascimento DateTime
-  endereco  String
-  observacoes String
+  id        Int        @id
   consultas Consulta[]
+  userId    Int        @unique
+  User      User       @relation(fields: [userId], references: [id])
 }
 
 model Consulta {
-  id           Int        @id @default(autoincrement())
-  data         DateTime
-  status       Status
+  id            Int           @id @default(autoincrement())
+  data          DateTime
+  status        Status
   especialidade Especialidade
   observacoes   String
-  medico       Medico     @relation(fields: [medicoId], references: [id])
-  medicoId     Int
-  paciente     Paciente   @relation(fields: [pacienteId], references: [id])
-  pacienteId   Int
-  funcionario  Funcionario @relation(fields: [funcionarioId], references: [id])
-  funcionarioId Int
-}
-
-
-model Funcionario {
-  id        Int      @id @default(autoincrement())
-  nome      String
-  cpf       String
-  dataNascimento DateTime
-  dataAdmissao DateTime
-  endereco  String
-  cargo    Cargo
-
-  Consulta Consulta[]
+  medico        Medico        @relation(fields: [medicoId], references: [id])
+  paciente      Paciente      @relation(fields: [pacienteId], references: [id])
+  medicoId      Int
+  pacienteId    Int
 }

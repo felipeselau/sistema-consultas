@@ -1,14 +1,12 @@
 import { Module } from '@nestjs/common';
-import { FuncionarioModule } from './funcionario/funcionario.module';
 import { MedicoModule } from './medico/medico.module';
-import { PacienteModule } from './paciente/paciente.module';
-import { ConsultaModule } from './consulta/consulta.module';
+import { AuthModule } from './auth/auth.module';
+import { FirebaseModule } from './firebase/firebase.module';
 @Module({
   imports: [
-    FuncionarioModule,
     MedicoModule,
-    PacienteModule,
-    ConsultaModule,
+    AuthModule,
+    FirebaseModule
   ],
   controllers: [],
   providers: [],

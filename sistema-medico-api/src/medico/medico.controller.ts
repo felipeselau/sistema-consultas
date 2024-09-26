@@ -1,33 +1,39 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
 import { MedicoService } from "./medico.service";
-import { Medico } from "@prisma/client";
+import { CreateMedicoDTO } from "./dto/create-medico.dto";
+import { UpdateMedicoDTO } from "./dto/update-medico.dto";
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 
-@Controller('api/v1/medicos')
+@Controller("medico")
 export class MedicoController {
-    constructor(private readonly medicoService: MedicoService) {}
+  constructor(private readonly medicoService: MedicoService){}
 
-    @Get()
-    async getAllMedicos(): Promise<Medico[]> {
-        return this.medicoService.getAllMedicos();
-    }
+  @Get()
+  async findAll() {
+    return this.medicoService.findAll();
+  }
 
-    @Get(':id')
-    async getMedicoById(@Param('id') id: string): Promise<Medico | null> {
-        return this.medicoService.getMedicoById(Number(id));
-    }
+  @UseGuards(JwtAuthGuard)
+  @Get(":id")
+  async findOne(@Param('id') id: string) {
+    return this.medicoService.findOne(+id);
+  }
 
-    @Post()
-    async createMedico(@Body() data: Medico): Promise<Medico> {
-        return this.medicoService.createMedico(data);
-    }
+  // @UseGuards(JwtAuthGuard)
+  // @Post()
+  // async create(@Body() createMedicoDto: CreateMedicoDTO) {
+  //   return this.medicoService.create(createMedicoDto);
+  // }
 
-    @Put(':id')
-    async updateMedico(@Param('id') id: string, @Body() data: Medico): Promise<Medico> {
-        return this.medicoService.updateMedico(Number(id), data);
-    }
+  @UseGuards(JwtAuthGuard)
+  @Put(":id")
+  async update(@Param('id') id: string, @Body() updateMedicoDto: UpdateMedicoDTO) {
+    return this.medicoService.update(+id, updateMedicoDto);
+  }
 
-    @Delete(':id')
-    async deleteMedico(@Param('id') id: string): Promise<Medico> {
-        return this.medicoService.deleteMedico(Number(id));
-    }
+  @UseGuards(JwtAuthGuard)
+  @Delete(":id")
+  async remove(@Param('id') id: string) {
+    return this.medicoService.remove(+id);
+  }
 }
