@@ -1,4 +1,4 @@
-import { IsDateString, IsNotEmpty, IsString } from "class-validator";
+import { IsBoolean, IsDateString, IsNotEmpty, IsString } from "class-validator";
 
 export abstract class CreateUserDTO {
   @IsString()
@@ -27,4 +27,8 @@ export abstract class CreateUserDTO {
   @IsString()
   @IsNotEmpty()
   senha: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  sexo: boolean;
 }

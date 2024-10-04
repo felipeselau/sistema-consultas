@@ -1,0 +1,176 @@
+{
+	"info": {
+		"_postman_id": "029ee45a-e92f-466d-aae5-f323dfdef3c5",
+		"name": "Medico API",
+		"description": "Collection for testing Medico endpoints in NestJS application.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19483052"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register Medico",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\":\"Dr. Felipe\",\r\n    \"cpf\":\"12341675908\",\r\n    \"dataNascimento\":\"1980-01-01T00:00:00.000Z\",\r\n    \"endereco\":\"Rua Exemplo, 123\",\r\n    \"observacoes\":\"Observação qualquer\",\r\n    \"crm\":\"121466\",\r\n    \"especialidade\":\"CARDIOLOGISTA\",\r\n\r\n    \"email\": \"emailtessteeee@mail.com\",\r\n    \"senha\": \"admin123\"\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/medico/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"medico",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Medico",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"emailtessteeee@mail.com\",\r\n    \"senha\": \"admin123\"\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/medico/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"medico",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get All Medicos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/medico",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"medico"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Medico by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjYzNmY2I2NDAzMjc2MGVlYjljMjZmNzdkNDA3YTY5NGM1MmIwZTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbmVzdGpzLXNpc3RlbWEtbWVkaWNvIiwiYXVkIjoibmVzdGpzLXNpc3RlbWEtbWVkaWNvIiwiYXV0aF90aW1lIjoxNzI3MzEyOTkwLCJ1c2VyX2lkIjoiNyIsInN1YiI6IjciLCJpYXQiOjE3MjczMTI5OTAsImV4cCI6MTcyNzMxNjU5MCwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6e30sInNpZ25faW5fcHJvdmlkZXIiOiJjdXN0b20ifX0.VkBN_l7PY1jgfNC1A6x0kA0lSOroDqVvegI5-9c2ZWdHxRCxZ_NUYit6KJfRtPzYOmXQmMjTzkhtaiCiA2k1HW_9D2HeW_TmZygKfQg0XugcIV1W6gS3r-DkgnzBPRVDV2bINi1fWt6dk9o7JfURSkCq2N7KCBmqFRRZNxwOlu9_LZnzS0RF_hca8R1nkXwlgQeCDf6J8TD7Z_hlyIxxzpsJfmpFP6jc7RurlDu_xqRqLzpWlgbsF2AmJNAVaAGqPZxP4rhGa-rkRvvqGqag0R2jXVuyQrtmSYXi0WbbA2mbdvk5r_j_0M9fXEIbdB6ANUcGJwFpLnE4gL0zXj_w6g",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/medico/:id",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"medico",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "7"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Medico",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nome\":\"Dr. Felipe Atualizado\",\r\n    \"dataNascimento\":\"1980-01-01T00:00:00.000Z\",\r\n    \"endereco\":\"Rua Atualizada, 123\",\r\n    \"observacoes\":\"Nova observação\",\r\n    \"especialidade\":\"PSIQUIATRA\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/medico/:id",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"medico",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "7"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Medico",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/medico/:id",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"medico",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "7"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

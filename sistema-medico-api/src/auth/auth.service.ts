@@ -5,10 +5,15 @@ import { MedicoService } from 'src/medico/medico.service';
 import * as bcrypt from 'bcrypt';
 import * as admin from 'firebase-admin';
 import { LoginDTO } from './dto/login.dto';
+import { PacienteService } from 'src/paciente/paciente.service';
+import { CreatePacienteDTO } from 'src/paciente/dto/create-paciente.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private medicoService: MedicoService) {}
+  constructor(
+    private medicoService: MedicoService,
+    private PacienteService: PacienteService,
+  ) {}
 
   async registerMedico(createMedicoDTO: CreateMedicoDTO) {
     // hash da senha
@@ -36,6 +41,73 @@ export class AuthService {
     const { email, senha } = loginDTO;
 
     const user = await this.medicoService.findByEmail(email);
+    if (!user) {
+      throw new Error('Email Inválido');
+    }
+
+    const isPasswordValid = await bcrypt.compare(senha, user.senha);
+    if (!isPasswordValid) {
+      throw new Error('Senha Inválida');
+    }
+
+    const customToken = await admin
+      .auth()
+      .createCustomToken(user.id.toString());
+
+    const request = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${process.env.FIREBASE_API_KEY}`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          token: customToken,
+          returnSecureToken: true,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    const data = await request.json();
+
+    const token = data.idToken;
+    const refreshToken = data.refreshToken;
+
+    return {
+      message:
+        'Login realizado com sucesso',
+      status: 200,
+      data: {
+        user,
+        token,
+        refreshToken,
+      },
+    };
+  }
+
+  async registerPaciente(createPacienteDTO: CreatePacienteDTO) {
+    const { senha } = createPacienteDTO;
+
+    const hashedPassword = await bcrypt.hash(senha, 10);
+
+    this.PacienteService.create({ ...createPacienteDTO, senha: hashedPassword });
+
+    await admin.auth().createUser({
+      email: createPacienteDTO.email,
+      password: createPacienteDTO.senha,
+    });
+
+    return {
+      message: 'Paciente registrado com sucesso',
+      status: 201,
+      data: createPacienteDTO,
+    };
+  }
+
+  async loginPaciente(loginDTO: LoginDTO) {
+    const { email, senha } = loginDTO;
+
+    const user = await this.PacienteService.findByEmail(email);
     if (!user) {
       throw new Error('Email Inválido');
     }

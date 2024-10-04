@@ -29,10 +29,11 @@ enum Especialidade {
 }
 
 enum Status {
-  AGENDADA
-  ADIADA
+  AGUARDANDO_CONFIRMACAO
+  CONFIRMADA
   CANCELADA
   REALIZADA
+  NAO_COMPARECEU
 }
 
 model User {
@@ -42,9 +43,10 @@ model User {
   dataNascimento DateTime
   endereco       String
   observacoes    String
+  sexo           Boolean
 
-  email          String @unique
-  senha          String
+  email String @unique
+  senha String
 
   Medico   Medico?
   Paciente Paciente?
@@ -63,12 +65,12 @@ model Paciente {
   id        Int        @id
   consultas Consulta[]
   userId    Int        @unique
-  User      User       @relation(fields: [userId], references: [id])
+  user      User       @relation(fields: [userId], references: [id])
 }
 
 model Consulta {
   id            Int           @id @default(autoincrement())
-  data          DateTime
+  horario       DateTime
   status        Status
   especialidade Especialidade
   observacoes   String

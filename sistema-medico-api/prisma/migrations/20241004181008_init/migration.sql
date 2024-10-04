@@ -2,7 +2,7 @@
 CREATE TYPE "Especialidade" AS ENUM ('CARDIOLOGISTA', 'CLINICO_GERAL', 'DERMATOLOGISTA', 'ENDOCRINOLOGISTA', 'GINECOLOGISTA', 'NEUROLOGISTA', 'OFTALMOLOGISTA', 'ORTOPEDISTA', 'OTORRINOLARINGOLOGISTA', 'PEDIATRA', 'PSIQUIATRA', 'UROLOGISTA');
 
 -- CreateEnum
-CREATE TYPE "Status" AS ENUM ('AGENDADA', 'ADIADA', 'CANCELADA', 'REALIZADA');
+CREATE TYPE "Status" AS ENUM ('AGUARDANDO_CONFIRMACAO', 'CONFIRMADA', 'CANCELADA', 'REALIZADA', 'NAO_COMPARECEU');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -12,6 +12,7 @@ CREATE TABLE "User" (
     "dataNascimento" TIMESTAMP(3) NOT NULL,
     "endereco" TEXT NOT NULL,
     "observacoes" TEXT NOT NULL,
+    "sexo" BOOLEAN NOT NULL,
     "email" TEXT NOT NULL,
     "senha" TEXT NOT NULL,
 
@@ -39,7 +40,7 @@ CREATE TABLE "Paciente" (
 -- CreateTable
 CREATE TABLE "Consulta" (
     "id" SERIAL NOT NULL,
-    "data" TIMESTAMP(3) NOT NULL,
+    "horario" TIMESTAMP(3) NOT NULL,
     "status" "Status" NOT NULL,
     "especialidade" "Especialidade" NOT NULL,
     "observacoes" TEXT NOT NULL,

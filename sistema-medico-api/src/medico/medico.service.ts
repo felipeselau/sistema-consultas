@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateMedicoDTO } from './dto/create-medico.dto';
 import { UpdateMedicoDTO } from './dto/update-medico.dto';
+import { $Enums } from '@prisma/client';
 
 @Injectable()
 export class MedicoService {
@@ -18,6 +19,7 @@ export class MedicoService {
       senha,
       crm,
       especialidade,
+      sexo,
     } = createMedicoDto;
 
     const user = await this.prisma.user.create({
@@ -29,6 +31,7 @@ export class MedicoService {
         observacoes,
         email,
         senha,
+        sexo
       },
     });
 
@@ -76,6 +79,58 @@ export class MedicoService {
         Medico: true,
       }
     });
+  }
+
+  async getEspecialidades() {
+    return Object.values($Enums.Especialidade);
+  }
+
+  async findByEspecialidade(especialidade: $Enums.Especialidade) {
+    return this.prisma.medico.findMany({
+      where: {
+        especialidade,
+      },
+      include: {
+        user: true,
+      },
+    });
+  }
+
+  //dado um período de tempo, retorna os dias disponíveis de um médico
+  async getDiasDisponiveis(medicoId: number, dataInicio: Date, dataFim: Date) {
+    const consultas = await this.prisma.consulta.findMany({
+      where: {
+        medicoId,
+        horario: {
+          gte: dataInicio,
+          lte: dataFim,
+        },
+      },
+    });
+
+    const diasDisponiveis = [];
+    const dias = [];
+    const dataAtual = new Date(dataInicio);
+
+    while (dataAtual <= dataFim) {
+      dias.push(new Date(dataAtual));
+      dataAtual.setDate(dataAtual.getDate() + 1);
+    }
+
+    for (const dia of dias) {
+      const consultasDia = consultas.filter(
+        (consulta) =>
+          consulta.horario.getFullYear() === dia.getFullYear() &&
+          consulta.horario.getMonth() === dia.getMonth() &&
+          consulta.horario.getDate() === dia.getDate()
+      );
+
+      if (consultasDia.length < 9) {
+        diasDisponiveis.push(dia);
+      }
+    }
+
+    return diasDisponiveis;
   }
 
   async update(id: number, updateMedicoDto: UpdateMedicoDTO) {
